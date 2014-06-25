@@ -16,6 +16,7 @@
     body {
     	background-color: #44923a;
     	color: #fddb34;
+    	text-shadow: 2px 2px #003074;
     }
     a {
     
@@ -37,12 +38,14 @@
 	    -webkit-border-radius: 50%; 
 	    border-radius: 50%;
 	    float: left;
+	    border: 1px solid #003074;
 	    
 	}
 	
 	.ui-tooltip {
 	   
 	   font-size: 10px;
+	   text-shadow:none;
 	    
 	  }
   	
@@ -370,11 +373,11 @@
 		    		
 					for ( var k = 0; k < betters[indexOfObject("name", firstBetter, betters)].teams.length; k++ ) {
 		    			
-						teamCodeFirstBetter += "<a href='#' title='" + betters[indexOfObject("name", firstBetter, betters)].teams[k] + "'><div class='circle' style='background-color: #003074;'></div></a>";
+						teamCodeFirstBetter += "<a href='#' title='" + betters[indexOfObject("name", firstBetter, betters)].teams[k] + "'><div class='circle' style='background-color: #00c8a1;'></div></a>";
 		    			
 		    		}
 					
-					var teamCodeFirstBetter = "<div style='width: 80px; margin-left: auto; margin-right: auto;'>" + teamCodeFirstBetter + "</div>";
+					var teamCodeFirstBetter = "<div style='width: 90px; margin-left: auto; margin-right: auto;'>" + teamCodeFirstBetter + "</div>";
 		    		
 		    		$('.output').append( "<div class='seven columns'>" + firstBetter + "<br />" + teamCodeFirstBetter + "<br /> <span class='small-text' >" + res[i].home_team.country + "</span> </div>" );
 		    		
@@ -394,11 +397,11 @@
 		    		
 					for ( var m = 0; m < betters[indexOfObject("name", secondBetter, betters)].teams.length; m++ ) {
 		    			
-		    			teamCodeSecondBetter += "<a href='#' title='" + betters[indexOfObject("name", secondBetter, betters)].teams[m] + "'><div class='circle' style='background-color: #003074;'></div></a>";
+		    			teamCodeSecondBetter += "<a href='#' title='" + betters[indexOfObject("name", secondBetter, betters)].teams[m] + "'><div class='circle' style='background-color: #00c8a1;'></div></a>";
 		    			
 		    		}
 					
-					var teamCodeSecondBetter = "<div style='width: 80px; margin-left: auto; margin-right: auto;'>" + teamCodeSecondBetter + "</div>";
+					var teamCodeSecondBetter = "<div style='width: 90px; margin-left: auto; margin-right: auto;'>" + teamCodeSecondBetter + "</div>";
 		    		
 		    		$('.output').append( "<div class='seven columns'>" + secondBetter + "<br />" + teamCodeSecondBetter + "<br /> <span class='small-text' >" + res[i].away_team.country + "</span> </div> <div class='sixteen columns' style='height: 100px;'></div>" );
 		    		
