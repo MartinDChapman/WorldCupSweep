@@ -2,537 +2,433 @@
 <html>
 <head>
   <meta charset='UTF-8'>
-  <title>Matchday Example / football.db JSON(P) API</title>
+  
+  <title></title>
 
+  <link href='http://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet' type='text/css'>
+
+  <link href='skeleton.css' rel='stylesheet' type='text/css'>
+  
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+  
+  <style>
+  
+    body {
+    	background-color: #44923a;
+    	color: #fddb34;
+    }
+    a {
+    
+    	font-size: 10px;
+    
+    }
+    
+  	.small-text {
+  	
+  		font-size: 30px;
+  	
+  	}
+
+	.circle {
+	
+	    width: 20px;
+	    height: 20px;
+	    -moz-border-radius: 50%; 
+	    -webkit-border-radius: 50%; 
+	    border-radius: 50%;
+	    float: left;
+	    
+	}
+	
+	.ui-tooltip {
+	   
+	   font-size: 10px;
+	    
+	  }
+  	
+  </style>
+  
   <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  
+  <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
 	<script>
-    
-	var groups = [];
 	
-	groups['ALG'] = "H";
-	groups['CIV'] = "C";
-	groups['GHA'] = "G";
-	groups['NGA'] = "F";
-	groups['CMR'] = "A";
-	groups['JPN'] = "C";
-	groups['KOR'] = "H";
-	groups['HON'] = "E";
-	groups['CRC'] = "D";
-	groups['BEL'] = "H";
-	groups['GER'] = "G";
-	groups['ESP'] = "B";
-	groups['FRA'] = "E";
-	groups['GRE'] = "C";
-	groups['ITA'] = "D";
-	groups['NED'] = "B";
-	groups['POR'] = "G";
-	groups['SUI'] = "E";
-	groups['CRO'] = "A";
-	groups['RUS'] = "H";
-	groups['BIH'] = "F";
-	groups['ENG'] = "D";
-	groups['IRN'] = "F";
-	groups['MEX'] = "A";
-	groups['USA'] = "G";
-	groups['AUS'] = "B";
-	groups['ARG'] = "F";
-	groups['BRA'] = "A";
-	groups['CHI'] = "B";
-	groups['URU'] = "D";
-	groups['COL'] = "C";
-	groups['ECU'] = "E";
+	$( document ).ready(function() {
 	
-	var sweep = [];
-	
-	sweep['Algeria'] = "JOSEF";
-	sweep['C\u00f4te d\'Ivoire'] = "JOSEF";
-	sweep['Ghana'] = "WIKTOR";
-	sweep['Nigeria'] = "SAMHAR";
-	sweep['Cameroon'] = "SANJAY";
-	sweep['Japan'] = "PIER";
-	sweep['South Korea'] = "SANJAY";
-	sweep['Honduras'] = "PADDY";
-	sweep['Costa Rica'] = "SAMHAR";
-	sweep['Belgium'] = "PADDY";
-	sweep['Germany'] = "SAMHAR";
-	sweep['Spain'] = "PIER";
-	sweep['France'] = "SANJAY";
-	sweep['Greece'] = "HECTOR";
-	sweep['Italy'] = "JOSEF";
-	sweep['Netherlands'] = "SANJAY";
-	sweep['Portugal'] = "JOSEF";
-	sweep['Switzerland'] = "WIKTOR";
-	sweep['Croatia'] = "PADDY";
-	sweep['Russia'] = "HECTOR";
-	sweep['Bosnia-Herzegovina'] = "PADDY";
-	sweep['England'] = "WIKTOR";
-	sweep['Iran'] = "WIKTOR";
-	sweep['Mexico'] = "PIER";
-	sweep['United States'] = "HECTOR";
-	sweep['Australia'] = "MARTIN";
-	sweep['Argentina'] = "HECTOR";
-	sweep['Brazil'] = "MARTIN";
-	sweep['Chile'] = "SAMHAR";
-	sweep['Uruguay'] = "PIER";
-	sweep['Colombia'] = "MARTIN";
-	sweep['Ecuador'] = "MARTIN";
-	
-    var teams = [];
-	
-	var toBePlayed = [];
-    
-	// GROUPS //
-    for (i = 1; i < 16; i++) {
-    (function(i) { // protects i in an immediately called function
-    
-	    $.getJSON( "http://footballdb.herokuapp.com/api/v1/event/world.2014/round/" + i + "?callback=?", function(data) {
-            
-            for (j = 0; j < data.games.length; j++) {
-                
-				if ( data.games[j].score1 == null && data.games[j].score2 == null) { 
-				
-					toBePlayed.push({
-						
-						firstTeam: data.games[j].team1_title,
-						
-						secondTeam: data.games[j].team2_title
-						
-					});
-					
-					continue;
-				
-			 	}
+        $( document ).tooltip();
+              
+		var betters = [];
+		
+		betters.push( {
 			
-                // If the first team in this game beat the second 
-                if ( data.games[j].score1 > data.games[j].score2 ) {
-					
-					updateEditGroupEntry(groups[data.games[j].team1_code], data.games[j].team1_title, "won", data.games[j].score1, data.games[j].score2);
-					
-					updateEditGroupEntry(groups[data.games[j].team2_code], data.games[j].team2_title, "lost", data.games[j].score2, data.games[j].score1);
-                
-				} else if ( data.games[j].score1 < data.games[j].score2 ) {
-					
-					updateEditGroupEntry(groups[data.games[j].team2_code], data.games[j].team2_title, "won", data.games[j].score2, data.games[j].score1);
-					
-					updateEditGroupEntry(groups[data.games[j].team1_code], data.games[j].team1_title, "lost", data.games[j].score1, data.games[j].score2);
-					
-				} else if ( data.games[j].score1 == data.games[j].score2 ) {
-					
-					updateEditGroupEntry(groups[data.games[j].team1_code], data.games[j].team1_title, "drew", data.games[j].score1, data.games[j].score2);
-					
-					updateEditGroupEntry(groups[data.games[j].team2_code], data.games[j].team2_title, "drew", data.games[j].score2, data.games[j].score1);
-					
-				}
-            
-            };
+			name : "Samhar",
 			
-			if ( i == 15 ) {
+			teams : [ "Germany", "Chile", "Nigeria", "Costa Rica" ],
 				
-				console.log(teams);
-			
-				for (n in teams) {
+			points : 0,
 				
-					var cannotBeCaughtOnPoints = 0;
-					
-					var teamsInGroup = [];
-					
-					for ( o in teams ) {
-					
-						if (teams[n].name != teams[o].name) {
-						
-							if (teams[n].group == teams[o].group) {
-							
-								teamsInGroup.push(teams[o]);
-								
-								if ( ( teams[n].points + ( ( 3 - ( teams[n].won + teams[n].drawn + teams[n].lost ) ) * 3 ) ) < teams[o].points) {
-									
-									cannotBeCaughtOnPoints++;
-									
-								} 
-								
-							}
-						
-						}
-						
-					}
-					
-					// Work out all upcoming games in this group
-					var groupGames = [];
-					
-					for (played in toBePlayed) {
-						
-						for (inGroup in teamsInGroup) {
-						
-							for (inGroup2 in teamsInGroup ) {
-								
-								if ( toBePlayed[played].firstTeam == teamsInGroup[inGroup].name && toBePlayed[played].secondTeam == teamsInGroup[inGroup2].name ||  
-									 toBePlayed[played].firstTeam == teamsInGroup[inGroup2].name && toBePlayed[played].secondTeam == teamsInGroup[inGroup].name ) {
-									
-									if (findWithAttr(groupGames, "firstTeam", toBePlayed[played].firstTeam) == -1 &&
-										findWithAttr(groupGames, "secondTeam", toBePlayed[played].secondTeam) == -1) {
-										
-										groupGames.push(toBePlayed[played]);	
-									
-									}
-									  
-								}
-								
-							}
-							
-						}
-					
-					}
-					
-					// If two teams cannot be caught on points with the remaining games left, this team is eliminated
-					if (cannotBeCaughtOnPoints > 1) {
-						
-						teams[n].eliminated = true;
-						
-					// Otherwise, more complex:
-					} else if (groupGames.length > 0) {
-					
-						// Try all possible outcomes
-						var combinations = [];
-						
-						for (z = 0; z < groupGames.length; z++) {
-						
-							combinations.push(['w', 'l', 'd']);
-							
-						}
-						
-						var f = 0;
-							
-						for ( combo in cartesian(combinations) ) {
-						
-							var potentialPoints = [];
-						
-							for (groupTeam in teamsInGroup) {
-							
-								potentialPoints.push( {
-							
-									name: teamsInGroup[groupTeam].name,
-									
-									points: teamsInGroup[groupTeam].points
-									
-								});
-								
-							}
-							
-							for ( r = 0; r < groupGames.length; r++ ) {
-							
-								var team1LocalPoints = 0;
-								
-								var team2LocalPoints = 0;
-								
-								if ( cartesian(combinations)[combo][r] == "w" ) {
-								
-									team1LocalPoints = 3;
-									
-									team2LocalPoints = 0;
-									
-								} else if ( cartesian(combinations)[combo][r] == "l" ) {
-									
-									team1LocalPoints = 0;
-									
-									team2LocalPoints = 3;
-									
-								} else if ( cartesian(combinations)[combo][r] == "d" ) {
-									
-									team1LocalPoints = 1;
-									
-									team2LocalPoints = 1;
-									
-								}
-								
-								for (var l in potentialPoints) {
-				
-									if (potentialPoints[l].name == groupGames[r].firstTeam) {
-										
-										potentialPoints[l].points = potentialPoints[l].points + team1LocalPoints;
-										
-									} else if (potentialPoints[l].name == groupGames[r].secondTeam) {
-										
-										potentialPoints[l].points = potentialPoints[l].points + team2LocalPoints;
-										
-									}
-									
-								}
-								
-								var cannotReach = 0;
-								
-								for (var h in potentialPoints) {
-								
-									if ( ( teams[n].points + ( ( 3 - ( teams[n].won + teams[n].drawn + teams[n].lost ) ) * 3 ) ) < potentialPoints[h].points ) {
-										
-										cannotReach++;
-										
-									}
-									
-								}
-								
-								if (cannotReach > 1) { 
-								
-									f++;
-								
-								}
-								
-							}
-							
-							
-						}
-						
-						if (f > 0 && f % 3 == 0) {
-							
-							teams[n].eliminated = true;
-							
-						}
-						
-					}
-					
-				}
-				
-				var localPoints = topPoints(teams);
-				
-				for ( eliminated in teams ) {
-					
-					if (teams[eliminated].eliminated == true) {
-					
-						for ( person in localPoints ) {
-							
-							if ( localPoints[person].name == sweep[teams[eliminated].name] ) {
-							
-								localPoints[person].lostTeams = localPoints[person].lostTeams + 1;	
-								
-							}
-						
-						}
-						
-					}
-					
-				}
-				
-				for ( k in localPoints ) {
-				
-					$('#output').append(localPoints.sort()[k].name + " " + localPoints[k].points + " (-" + localPoints[k].lostTeams  + ") <br />");
-					
-				}
-				
-				
-				
-			} 
-			
-            
-        } );
-    
-	})(i);  
-    };
-	
-	// GROUPS //
-    for (i = 16; i < 21; i++) {
-    (function(i) { // protects i in an immediately called function
-    
-	    $.getJSON( "http://footballdb.herokuapp.com/api/v1/event/world.2014/round/" + i + "?callback=?", function(data) {
-			
-			 var localPoints = topPoints(teams);
-			 
-			 for (j = 0; j < data.games.length; j++) {
-				
-				 if ( sweep[data.games[j].team1_title] == sweep[data.games[j].team2_title] ) continue;
-				 
-				 if ( data.games[j].score1 == null && data.games[j].score2 == null) { 
-				 
-				 	$('#h2h').append( sweep[data.games[j].team1_title] + " vs " + sweep[data.games[j].team2_title]);
-					
-				 } else {
-				 
-					if ( ( data.games[j].score1 + data.games[j].score1ot + data.games[j].score1p ) > ( data.games[j].score2 + data.games[j].score2ot + data.games[j].score2p ) ) {
-						
-						for ( person in localPoints ) {
-							
-							if ( localPoints[person].name == sweep[data.games[j].team2_title] ) {
-							
-								localPoints[person].lostTeams = localPoints[person].lostTeams + 1;	
-								
-							}
-						
-						}
-						
-					} else if ( ( data.games[j].score1 + data.games[j].score1ot + data.games[j].score1p ) < ( data.games[j].score2 + data.games[j].score2ot + data.games[j].score2p ) ) {
-						
-						for ( person in localPoints ) {
-							
-							if ( localPoints[person].name == sweep[data.games[j].team1_title] ) {
-							
-								localPoints[person].lostTeams = localPoints[person].lostTeams + 1;	
-								
-							}
-						
-						}
-						
-					}
-				
-				 }
-				 
-			 }
+			teamsEliminated :  [],
 			
 		});
 		
-	});
-	}
-	
-	function cartesian(arg) {
-		var r = [], max = arg.length-1;
-		function helper(arr, i) {
-			for (var j=0, l=arg[i].length; j<l; j++) {
-				var a = arr.slice(0); // clone arr
-				a.push(arg[i][j])
-				if (i==max) {
-					r.push(a);
-				} else
-					helper(a, i+1);
-			}
-		}
-		helper([], 0);
-		return r;
-	};
-	
-	// Finals 
-	
-	function topPoints(teams) {
-	
-		var points = [];
-	
-		for ( var k in teams ) {
+		betters.push( {
+			
+			name : "Josef",
+			
+			teams : [ "Italy", "Portugal", "Algeria", "Cote D'Ivoire" ],
+				
+			points : 0,
+				
+			teamsEliminated :  [],
+			
+		});
 		
+		betters.push( {
 			
-			if (findWithAttr(points, "name", sweep[teams[k].name]) == - 1) {
+			name : "Sanjay",
 			
-				points.push( {
-					
-					name: 	 sweep[teams[k].name],
-					
-					points: teams[k].points,
-					
-					lostTeams: 0
-					
-				});
+			teams : [ "Netherlands", "France", "South Korea", "Cameroon" ],
 				
-			} else {
+			points : 0,
 				
-				for (var l in points) {
+			teamsEliminated :  [],
+			
+		});
+		
+		betters.push( {
+			
+			name : "Paddy",
+			
+			teams : [ "Croatia", "Belgium", "Bosnia", "Honduras" ],
 				
-					if (points[l].name == sweep[teams[k].name]) {
-						
-						points[l].points = points[l].points + teams[k].points;
-						
-					}
-					
+			points : 0,
+				
+			teamsEliminated :  [],
+			
+		});
+		
+		betters.push( {
+			
+			name : "Wiktor",
+			
+			teams : [ "Switzerland", "England", "Ghana", "Iran" ],
+				
+			points : 0,
+				
+			teamsEliminated :  [],
+			
+		});
+		
+		betters.push( {
+			
+			name : "Pier",
+			
+			teams : [ "Spain", "Uruguay", "Japan", "Mexico" ],
+				
+			points : 0,
+				
+			teamsEliminated :  [],
+			
+		});
+		
+		betters.push( {
+			
+			name : "Hector",
+			
+			teams : [ "Greece", "Argentina", "Russia", "USA" ],
+				
+			points : 0,
+				
+			teamsEliminated :  [],
+			
+		});
+		
+		betters.push( {
+			
+			name : "Martin",
+			
+			teams : [ "Brazil", "Colombia", "Ecuador", "Australia" ],
+				
+			points : 0,
+				
+			teamsEliminated :  [],
+			
+		});
+		
+		var listOfTeams = [];
+	
+		// Gather formatted team information, and current points accrued by betters
+		$.ajax( {
+		    
+			type: 'GET',
+		    
+		    url: "http://worldcup.sfg.io/teams/group_results",
+		    
+		    async: false,
+		    
+		    contentType: "application/json",
+		    
+		    dataType: 'json',
+		    
+		    success: function(res) {
+		      
+		    	for ( group in res ) {
+		    		
+		    		for ( teams in res[group] ) {
+		    			
+		    			for ( team in res[group][teams].teams) {
+		    				
+		    				listOfTeams.push( {
+		    					
+		    					group: res[group][teams].letter,
+		    					
+		    					name : res[group][teams].teams[team].team.country,
+		    					
+		    					code: res[group][teams].teams[team].team.fifa_code,
+		    					
+		    					points : res[group][teams].teams[team].points,
+		    						
+		    					position : team,
+		    					
+		    				});
+		    				
+		    				for ( better in betters ) {
+		    					
+		    					if ( $.inArray( res[group][teams].teams[team].team.country, betters[better].teams ) > -1 ) {
+		    						
+		    						betters[better].points += res[group][teams].teams[team].team.points;
+		    						
+		    					}
+		    					
+		    				}
+		    				
+		    			}
+		    			
+		    		}
+		    		
+		    	}
+		    	
+		    },
+		    
+		    error: function(e) {
+		    
+		    	console.log(e.message);
+		    
+		    }
+		
+		} );
+		
+		function indexOfObject(key, value, array) {
+			
+			for ( element in array ) {
+				
+				if ( array[element][key] == value) return element;
+				
+			}
+			
+			return -1;
+			
+		}
+		
+		function removeFromArray(value, array) {
+			
+			for(var i = array.length - 1; i >= 0; i--) {
+			    
+				if(array[i] === value) {
+			    
+					array.splice(i, 1);
+			    
 				}
 				
 			}
 			
 		}
 		
-		return points.sort(function(a,b) {return (a.points < b.points) ? 1 : ((b.points > a.points) ? -1 : 0);});
+		// Determine how many teams are remaining after the groups
+		$.ajax( {
+		    
+			type: 'GET',
+		    
+		    url: "http://worldcup.sfg.io/group_results",
+		    
+		    async: false,
+		    
+		    contentType: "application/json",
+		    
+		    dataType: 'json',
+		    
+		    success: function(res) {
+		      
+		    	for ( group in res ) {
+		    		
+		    		for ( better in betters ) {
+    					
+    					if ( $.inArray( res[group].country, betters[better].teams ) > -1 ) {
+    						
+    						// If all games have been played, and you are bottom or third, team is knocked out of groups
+    						if ( ( res[group].wins + res[group].draws + res[group].losses ) == 3 && 
+    								listOfTeams[indexOfObject("name", res[group].country, listOfTeams)].position > 1 
+    						   ) {
+    							
+    						   console.log(res[group].country + " eliminated.");
+    						   
+    						   betters[better].teamsEliminated.push(res[group].country);
+    						   
+    						   removeFromArray(res[group].country, betters[better].teams)
+    							
+    						}
+    						
+    					}
+    					
+    				}
+		    		
+		    	}
+		    	
+		    },
+		    
+		    error: function(e) {
+		    
+		    	console.log(e.message);
+		    
+		    }
 		
-	}
-	
-	
-
-	function updateEditGroupEntry(group, name, result, ourscore, theirscore, eliminated) {
-	
-		if (findWithAttr(teams, "name", name) == -1) {
-			
-			teams.push( {
-			
-				group: group,
-				
-				name: name,
-				
-				won: 0,
-				
-				drawn: 0,
-				
-				lost: 0,
-				
-				difference: 0,
-				
-				points: 0,
-				
-				eliminated: eliminated
-				
-			} );
-			
-		} 
+		} );
 		
-	    for (var k in teams) {
-		 
-			if (teams[k].name == name) {
-			
-				var points;
-				
-				if (result == "won") {
-				
-					teams[k].won = teams[k].won + 1;
-					
-					points = 3;
-				
-				} else if ( result == "drew" ) {
-					
-					teams[k].drawn = teams[k].drawn + 1;
-					
-					points = 1;
-					
-				} else if ( result == "lost" ) {
-					
-					teams[k].lost = teams[k].lost + 1;
-					
-					points = 0;
-					
-				}
-				
-				teams[k].difference = teams[k].difference + ( ourscore - theirscore ) ;
-				
-				teams[k].points = teams[k].points + points;
-				
-				teams[k].eliminated = eliminated;
-				
-				break;
-			
-			}
-	   
-	   }
+		// Determine head-to-heads
 		
-	}
+		$.ajax( {
+		    
+			type: 'GET',
+		    
+		    url: "http://worldcup.sfg.io/matches",
+		    
+		    async: false,
+		    
+		    contentType: "application/json",
+		    
+		    dataType: 'json',
+		    
+		    success: function(res) {
+		      
+		    	for ( var i = 48; i < res.length; i++ ) {
+		    		
+		    		// Determine who has been knocked out in previous head to heads
+					for ( better in betters ) {
+    					
+    					if ( $.inArray( res[i].country, betters[better].teams ) > -1 ) {
+    						
+    						if ( res[i].home_team.country == res[i].winner ) {
+    							
+    						   betters[better].teamsEliminated.push(res[i].away_team.country);
+    						   
+    						   removeFromArray(res[i].away_team.country, betters[better].teams);
+    							
+    						} else if ( res[i].away_team.country == res[i].winner ) {
+    							
+    						   betters[better].teamsEliminated.push(res[i].home_team.country);
+      						   
+      						   removeFromArray(res[i].home_team.country, betters[better].teams);
+    							
+    						}
+    						
+    					}
+    					
+    				}
+		    		
+					// If game has no information, or it has passed, skip
+		    		if ( res[i].home_team.country == undefined || res[i].away_team.country == undefined || res[i].home_team.status == "completed" ) continue;
+		    		
+		    		var firstBetter;
+		    		
+		    		var secondBetter;
+		    		
+		    		for ( better in betters ) {
+		    			
+		    			if ( $.inArray( res[i].home_team.country, betters[better].teams ) > -1 ) {
+		    				
+		    				firstBetter = betters[better].name;
+		    				
+		    			} else if ( $.inArray( res[i].away_team.country, betters[better].teams ) > -1 ) {
+		    				
+		    				secondBetter = betters[better].name;
+		    				
+		    			}
+		    			
+		    			
+		    		}
+		    		
+		    		$('.output').append( "<div>" + res[i].datetime.substring( 0, res[i].datetime.indexOf('T') ) + "</div>" )
+		    		
+		    		var teamCodeFirstBetter = "";
+		    		
+		    		for ( var j = 0; j < betters[indexOfObject("name", firstBetter, betters)].teamsEliminated.length; j++ ) {
+		    			
+		    			teamCodeFirstBetter += "<a href='#' title='" + betters[indexOfObject("name", firstBetter, betters)].teamsEliminated[j] + "'><div class='circle' style='background-color: #e27171;'></div></a>";
+		    			
+		    		}
+		    		
+					for ( var k = 0; k < betters[indexOfObject("name", firstBetter, betters)].teams.length; k++ ) {
+		    			
+						teamCodeFirstBetter += "<a href='#' title='" + betters[indexOfObject("name", firstBetter, betters)].teams[k] + "'><div class='circle' style='background-color: #003074;'></div></a>";
+		    			
+		    		}
+					
+					var teamCodeFirstBetter = "<div style='width: 80px; margin-left: auto; margin-right: auto;'>" + teamCodeFirstBetter + "</div>";
+		    		
+		    		$('.output').append( "<div class='seven columns'>" + firstBetter + "<br />" + teamCodeFirstBetter + "<br /> <span class='small-text' >" + res[i].home_team.country + "</span> </div>" );
+		    		
+		    		//
+		    		
+		    		$('.output').append( "<div class='two columns'>vs</div>" );
+		    		
+		    		//
+		    		
+		    		var teamCodeSecondBetter = "";
+		    		
+					for ( var l = 0; l < betters[indexOfObject("name", secondBetter, betters)].teamsEliminated.length; l++ ) {
+		    			
+		    			teamCodeSecondBetter += "<a href='#' title='" + betters[indexOfObject("name", secondBetter, betters)].teamsEliminated[l] + "'><div class='circle' style='background-color: #e27171;'></div></a>";
+		    			
+		    		}
+		    		
+					for ( var m = 0; m < betters[indexOfObject("name", secondBetter, betters)].teams.length; m++ ) {
+		    			
+		    			teamCodeSecondBetter += "<a href='#' title='" + betters[indexOfObject("name", secondBetter, betters)].teams[m] + "'><div class='circle' style='background-color: #003074;'></div></a>";
+		    			
+		    		}
+					
+					var teamCodeSecondBetter = "<div style='width: 80px; margin-left: auto; margin-right: auto;'>" + teamCodeSecondBetter + "</div>";
+		    		
+		    		$('.output').append( "<div class='seven columns'>" + secondBetter + "<br />" + teamCodeSecondBetter + "<br /> <span class='small-text' >" + res[i].away_team.country + "</span> </div> <div class='sixteen columns' style='height: 100px;'></div>" );
+		    		
+		    	}
+		    	
+		    },
+		    
+		    error: function(e) {
+		    
+		    	console.log(e.message);
+		    
+		    }
+		
+		} );
 	
-  function findWithAttr(array, attr, value) {
-	  
-    for(var i = 0; i < array.length; i += 1) {
-      
-    	if(array[i][attr] === value) {
-        
-    		return i;
-        
-    	}
-    
-    }
-	
-	return -1;
-}
+	} );
 
   </script>
   
-  <link href='http://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet' type='text/css'>
-  
 </head>
+
 <body style="text-align: center; font-family: 'Indie Flower', cursive; font-size: 50px;">
 
-<div>Upcoming head-to-heads:</div>
-<div id="h2h"></div>
+<div class="container" id ="head-to-heads">
 
-<div>Results after group stages:</div>
-<div id='output'></div>
+	<div style="margin-bottom: 50px;">World Cup 2014: Informatics Knockout Games</div>
+	
+	<div class="output"></div>
+
+</div>
 
 </body>
 </html>
